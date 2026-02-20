@@ -34,12 +34,7 @@ Each key is uniquely identified by a pair of frequencies.
 
 # 📊 DTMF Frequency Table
 
-           1209 Hz   1336 Hz   1477 Hz
-  -------- --------- --------- ---------
-  697 Hz   1         2         3
-  770 Hz   4         5         6
-  852 Hz   7         8         9
-  941 Hz   \*        0         \#
+<img width="787" height="191" alt="image" src="https://github.com/user-attachments/assets/9b0dcd3d-513c-4d5c-b2ef-5aef7db924b8" />
 
 for example The image below also shows the frequency spectrum produced by key 1 :
 
@@ -101,8 +96,8 @@ This improves frequency resolution and reduces spectral leakage.
 
 # 📂 Project Structure
 
-DTMF_Project/ │ ├── main.m ├── DTMF_App.m ├── Creat_DTMF_signal.m ├──
-dtmf.m └── README.md
+<img width="298" height="274" alt="image" src="https://github.com/user-attachments/assets/b9451ff7-1eea-4ae3-bfaf-2558beaef8ca" />
+
 
 ------------------------------------------------------------------------
 
