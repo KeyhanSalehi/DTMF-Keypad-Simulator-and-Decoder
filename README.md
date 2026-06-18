@@ -61,8 +61,8 @@ Each DTMF tone is generated as:
 
 x(t) = sin(2πf_row t) + sin(2πf_col t)
 
-Sampling Frequency: 8000 Hz\
-Signal Duration: 0.5 seconds
+Sampling Frequency: 8000 Hz (`fs = 8000`)\
+Signal Duration: 0.5 seconds (`t = 0:1/fs:0.5`)
 
 ------------------------------------------------------------------------
 
@@ -84,11 +84,12 @@ Decoding steps:
 
 ## 3️⃣ Spectrum Analysis
 
-Power Spectral Density is computed using:
+Power Spectral Density is computed with MATLAB's `pwelch` using:
 
--   Hamming window
--   Overlap = 100 samples
--   Welch method
+-   Hamming window of length **130** (`hamming(130)`)
+-   Overlap = **100** samples (`noverlap = 100`)
+-   FFT length = full signal length (`nfft = length(signal)`)
+-   Welch method, plotted as `10*log10(pxx)` over 0–2000 Hz
 
 This improves frequency resolution and reduces spectral leakage.
 
@@ -96,17 +97,55 @@ This improves frequency resolution and reduces spectral leakage.
 
 # 📂 Project Structure
 
+```
+DTMF-Keypad-Simulator-and-Decoder/
+├─ main.m                 # Entry point: clears workspace and launches the app
+├─ DTMF_App.m             # GUI: keypad window + result/spectrum window + callback
+├─ Creat_DTMF_signal.m    # Transmitter: builds and plays the dual-tone signal
+├─ dtmf.m                 # Receiver: FFT-based decoder that identifies the key
+└─ README.md
+```
+
 <img width="298" height="274" alt="image" src="https://github.com/user-attachments/assets/b9451ff7-1eea-4ae3-bfaf-2558beaef8ca" />
 
+------------------------------------------------------------------------
+
+# 🧩 Code Overview
+
+### `main.m`
+Runs `clc; clear; close all;` then calls `DTMF_App()` to start the system.
+
+### `DTMF_App.m`
+Builds two `uifigure` windows:
+
+-   **Keypad App** — a 4×3 grid of buttons (`1–9`, `*`, `0`, `#`).
+-   **Result App** — a label showing the detected key and a `uiaxes` plot of the
+    Welch power spectrum.
+
+On each button press the callback maps the label to a key index, generates the
+tone via `Creat_DTMF_signal`, decodes it via `dtmf`, updates the label, and
+plots the spectrum with `pwelch`.
+
+### `Creat_DTMF_signal.m`
+`[out_s, out_f] = Creat_DTMF_signal(key)` — looks up the row/column frequency
+pair from a 12×2 `key_map`, synthesizes
+`sin(2πf_row·t) + sin(2πf_col·t)` at `fs = 8000 Hz`, plays it with
+`audioplayer`/`playblocking`, and returns the signal and sample rate.
+
+### `dtmf.m`
+`result = dtmf(x, fs)` — takes an `N = 512` FFT from the **center** of the
+signal, converts the 4 row and 3 column DTMF frequencies to bin indices with
+`k = round(f·N/fs)`, finds the peak magnitude in each group, and returns the
+key index (1–12) from a lookup table.
 
 ------------------------------------------------------------------------
 
 # 🚀 How to Run
 
 1.  Open MATLAB
-2.  Run: main
-3.  Press any key on the keypad GUI
-4.  The detected key and frequency spectrum will be displayed
+2.  Run: `main`
+3.  Press any key on the Keypad App window
+4.  The detected key and frequency spectrum appear in the Result App window
 
 ------------------------------------------------------------------------
 
